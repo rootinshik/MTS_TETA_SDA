@@ -1,0 +1,359 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[utf8]{inputenc}     % Кодировка исходного текста
+\usepackage[english, russian]{babel}    % Поддержка русского языка
+\usepackage{indentfirst}    % Отступ в первом абзаце
+\usepackage{amsmath, amsfonts, amssymb, physics, tabularx}     % Разнообразные команды и значки
+\usepackage[f]{esvect}
+\usepackage[left=20mm, right=10mm, top=20mm, bottom=20mm]{geometry}     % Отступы
+\usepackage[table]{xcolor} % еще таблицы
+\usepackage{tabto} % для \tab
+\usepackage{minted} % вставка кода
+\usepackage{graphicx} 
+\usepackage{listings}
+\usepackage{diagbox}
+\usepackage{hyperref}
+
+\pagenumbering{gobble}  % Отключение нумерации
+\newcommand\mymathop[1]{\mathop{\operatorname{#1}}}
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+
+\DeclareMathOperator*{\matrixA}{A}
+\DeclareMathOperator{\Rank}{Rank}
+\DeclareMathOperator{\Dim}{Dim}
+\DeclareMathOperator{\Lin}{Lin}
+\DeclareMathOperator{\Trig}{Trig}
+\DeclareMathOperator{\Leg}{Leg}
+\DeclareMathOperator{\Cheb}{Cheb}
+\DeclareMathOperator{\Taylor}{Taylor}
+\DeclareMathOperator{\cov}{cov}
+\DeclareMathOperator{\corr}{corr}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\makeatletter
+\renewcommand*\env@matrix[1][\arraystretch]{%
+  \edef\arraystretch{#1}%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{*\c@MaxMatrixCols c}}
+\makeatother
+
+\author{Гурьянов Кирилл}
+
+\title{Домашние задание №2 по статистике. МТС.Teta ШАД}
+\date{\todaS}
+
+\begin{document}
+
+\textbf{Задание №1.} Правильная монетка бросается до тех пор, пока не выпадет $n$ орлов подряд. Найдите математическое ожидание необходимого числа бросков.
+
+\vspace{0.5cm} 
+
+\href{http://old.mccme.ru/free-books/shen/shen-probabilitS.pdf}{\textit{В процессе решения мне очень помогла книга Александра Шеня ($56 - 57$ страницы).}}
+
+\vspace{0.5cm}
+
+\textbf{Решение задания №1.} Рассмотрим частные случаи. \\  
+
+При $\mathbf{n = 1}$, то есть, когда нам нужна один выпавший орел для того, чтобы прекратить игру. Если на первом броске выпал орел (вероятность такого исхода равна {$\frac{1}{2}$) то мы прекращаем подкидывать монетку, иначе выпал орел и мы подкидываем следующий раз, получаем последовательность вероятностей: $\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \dots, \frac{1}{2^n}$. Тогда искомое математическое ожидание:
+\[
+    \mathbb{E}{S_{n=1}} = 1 \cdot \frac{1}{2} + 2 \cdot \frac{1}{4} + 3 \cdot \frac{1}{8} + \dots + n \cdot \frac{1}{2^n} = \sum_{k=1}^{\infty} \frac{k}{2^k} 
+\]
+Можно посчитать сумму этого ряда, но вместо этого воспользуемся другим подходом, так как при росте числа подряд выпавших орлов $n$ сложность будет только увеличиваться. \\ 
+
+Пусть $S$ - искомое математическое ожидание, тогда в половине случаев выпал орел и мы прекратили подбрасывать монетку, в половине выпала решка и нам нужно начать все сначала:
+\[
+    S = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot (1 + S)
+\]
+Тогда искомое математическое ожидание для $n = 1$ будет равно $2$. \\ 
+
+Немного усложним задачу и рассмотрим случай для $\mathbf{n = 2}$. Рассмотрим подходящие нам комбинации: 
+\[
+    \{ OO \}, \{ POO \}, \{ PPOO, OPOO \}, \{ PPPOO, OPPOO, POPOO \}, \dots
+\]
+Видим, что перед двумя орлами у нас всегда должна стоять решка. Пусть $S$ искомое математическое ожидание, до появления двух орлов подряд: тогда либо выпадет решка и мы вернемся в исходное состояние, либо выпадет орел и перейдем в $S_0$. $S_0$ -- математическое ожидание количества бросков необходимое для получения двух орлов подряд, при условии, что на предыдущем шаге выпал орел. Получим систему:
+\[
+    \begin{cases}
+        S = \frac{1}{2} \cdot (1 + S) + \frac{1}{2} \cdot (1 + S_0) \\ 
+        S_0 = \frac{1}{2} \cdot 1 + \frac{1}{2} \cdot (1 + S)
+    \end{cases}
+\]
+После решения этой системы мы получим, что искомое математическое ожидание $\mathbb{E}_2 = S = 6$. \\
+
+Теперь рассмотрим математическое ожидание $\mathbb{E}{S_{n}}$ в общем случае, при произвольном $n$. Для этого введем вспомогательные математические ожидания:
+\begin{itemize}
+    \item $S_i$ — математическое ожидание числа бросков до появления $N$ орлов при условии, что до этого последними $i$-тыми выпадениями оказались орлы.
+    \item $S$ — математическое ожидание числа бросков до появления $N$ орлов подряд.
+\end{itemize}
+
+Получим следующие уравнения:
+\[
+    \begin{cases}
+        S = \frac{1}{2} \cdot (S + 1) + \frac{1}{2} \cdot (S_1 + 1) \\ 
+        S_1 = \frac{1}{2} \cdot (S + 1) + \frac{1}{2} \cdot (S_2 + 1) \\ 
+        S_2 = \frac{1}{2} \cdot (S + 1) + \frac{1}{2} \cdot (S_3 + 1) \\
+        \hfill \dots \hfill \\ 
+        S_{n-1} = \frac{1}{2} \cdot (S + 1) + \frac{1}{2} \cdot 1
+    \end{cases}
+\]
+Выразим $S_k$ через $S_{k+1}$ и подставим в выражение для $S$:
+\begin{gather*}
+    \frac{1}{2} \cdot (S_k + 1) = \frac{1}{2} \cdot \frac{1}{2} \cdot (S_{k+1} + 1) + \frac{1}{2} \cdot \frac{1}{2} \cdot (S + 3) \\ 
+    S = \frac{1}{2} \cdot (S + 1) + \frac{1}{2} \cdot (S_1 + 1) = \frac{1}{2} \cdot (S + 1) + \frac{1}{2} \cdot \frac{1}{2} \cdot (S_2 + 1) + \frac{1}{2} \cdot \frac{1}{2} \cdot (S + 3) = \\
+    = \frac{1}{2} \cdot (S + 1) + \frac{1}{4} \cdot (S + 3) + \frac{1}{8} \cdot (S + 3) + \dots + \frac{1}{2^n}(S + 3) + \frac{1}{2^n};
+\end{gather*}
+Просуммируем геометрическую прогрессию: $\cfrac{1}{2^k} \cdot (S + 3)$, получим:
+\[
+    S = \frac{1}{2} \cdot (S + 1) + \frac{1}{4} \cdot (S + 3) \cdot \frac{1}{2} \cdot \left ( 1 - \frac{1}{2^{n-1}} \right ) + \frac{1}{2^n}
+\]
+После преобразований, имеем искомое математическое ожидание. \\ 
+
+\textbf{Ответ:} $\mathbb{E}{S_{\text{$n$ орлов подряд}}} = 2^{n + 1} - 2$. 
+
+\newpage
+
+\textbf{Задание №2.} Авария происходит в точке $X$, которая равномерно распределена на дороге длиной $L$. Во время аварии машина скорой помощи находится в точке $Y$, которая так же равномерно распределена на дороге. Считая, что $X$ и $Y$ независимы, найти математическое ожидание расстояния между машиной скорой помощи и точкой аварии. 
+
+\vspace{0.5cm} 
+
+\textbf{Решение задания №2.} Мы знаем, что $X$ и $Y$ равномерно распределены на отрезке $[0, L]$. Таким образом, функция плотности вероятности для $X$ и $Y$ равна:
+\begin{gather*}
+    p_x(x) = \frac{1}{L} \quad 0 \ge x \ge L \\
+    p_y(y) = \frac{1}{L} \quad 0 \ge y \ge L
+\end{gather*}
+Наше искомое математическое ожидание $\mathbb{E} \abs{X - Y}$:
+\begin{align*}
+    \mathbb{E} \abs{x - y} &= \int_{0}^L \int_{0}^L \abs{x- y} p_x(x) p_y(y) dx dy = \frac{1}{L^2} \int_{0}^L \int_{0}^L \abs{x - y} dx dy = \\ 
+    & = \frac{1}{L^2} \left ( \int_0^L \int_y^L (x-y) dx  dy + \int_0^L \int_0^y (y - x) dx  dy = \\
+    & = \frac{2}{L^2} \int_0^L \int_0^y (y-x) dx dy = \frac{2}{L^2} \int_0^L \left ( y x \Big |_{x=0}^{x=y} - \frac{x^2}{2} \Big |_{x=0}^{x=y} \right ) dy = \\ 
+    & = \frac{2}{L^2} \int_0^L \left (y^2 - \frac{y^2}{2} \right ) = \frac{1}{L^2} \int_0^L y^2 dy = \frac{1}{L^2} \cdot \frac{y^3}{3} \Big |_0^L = \frac{L}{3}
+    \right )
+\end{align*}
+    
+
+\textbf{Ответ:} $\mathbb{E}|X - Y| = \cfrac{L}{3}$.
+\newpage
+
+\textbf{Задание №3.} Совместный закон распределения случайных величин $S$ и $S$ задан таблицей:
+\[
+    \begin{tabular}{|c|c|c|c|}
+        \hline 
+         \diagbox[width=3em]{X}{Y} & 0 & 1 & 3 \\
+         \hline  
+         0 & 0.15 & 0.05 & 0.3 \\ 
+         \hline
+         -1 & 0 & 0.15 & 0.1 \\ 
+         \hline
+         -2 & 0.15 & 0 & 0.1 \\
+         \hline 
+    \end{tabular}
+\]
+Найти:
+\begin{enumerate}
+    \item Законы распределения случайных величин $X$ и $Y$.
+    \item $\mathbb{E}X$, $\mathbb{E}Y$, $\mathbb{D}X$, $\mathbb{D}Y$, $\cov(X, Y)$, $\corr(X, Y)$, а так же математическое ожидание и дисперсию случайной величины $V = 6X - 4Y + 3$.
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\textbf{Решение задания №3.} Приступим. \\ 
+
+Закон распределения $X$ и для $Y$ соответственно:
+\begin{center}
+    \begin{tabular}{lll}
+        $P(X = -2) = 0.25$ & $P(X = -1) = 0.25$ & $P(X = 0) = 0.5$ \\
+        $P(Y = 0) = 0.3$ & $P(Y = 1) = 0.2$ & $P(Y = 3) = 0.5$  
+    \end{tabular}
+\end{center}
+
+  
+Математические ожидания:
+\begin{align*}
+    \mathbb{E}X &= -2 \cdot 0.25 + -1 \cdot 0.25 + 0 \cdot 0.5 = -0.75 \\ 
+    \mathbb{E}Y &= 0 \cdot 0.3 + 1 \cdot 0.2 + 3 \cdot 0.5 = 1.7
+\end{align*}
+
+Дисперсию будем считать через математическое ожидание квадрата случайной величины $\mathbb{D}X = \mathbb{E}X^2 - \left ( \mathbb{E}X \right )^2$. Для этого посчитаем математические ожидания квадрата случайных величин $X$ и $Y$:
+\begin{align*}
+    \mathbb{E}X^2 &= (-2)^2 \cdot 0.25 + (-1)^2 \cdot 0.25 + 0 \cdot 0.5 = 1.25 \\ 
+    \mathbb{E}Y^2 &= 0 \cdot 0.3 + (1)^2 \cdot 0.2 + (3)^2 \cdot 0.5 = 4.7
+\end{align*}
+Итог для дисперсий:
+\begin{align*}
+    \mathbb{D}X &= \mathbb{E}X^2 - \left ( \mathbb{E}X \right )^2 = 1.25 - (-0.75)^2 = 0.6875 \\ 
+    \mathbb{D}Y &= \mathbb{E}Y^2 - \left ( \mathbb{E}Y \right )^2 = 4.7 - (1.7)^2 = 1.81
+\end{align*}
+
+Теперь ковариация.
+\begin{align*}
+    \cov(X, Y) &= \mathbb{E} (x - \mathbb{E}X)(y - \mathbb{E}Y) =\\
+    &= (0 - (-0.75))(0 - 1.4) \cdot P(X = 0, Y = 0) + \\
+    &\quad+ (0 - (-0.75))(1 - 1.4) \cdot P(X = 0, Y = 1) + \\
+    &\quad+ (0 - (-0.75))(3 - 1.4) \cdot P(X = 0, Y = 3) + \\
+    &\quad+ (-1 - (-0.75))(0 - 1.4) \cdot P(X = -1, Y = 0) + \\
+    &\quad+ (-1 - (-0.75))(1 - 1.4) \cdot P(X = -1, Y = 1) + \\
+    &\quad+ \dots = \\ 
+    &= 0.225    
+\end{align*}
+
+Корреляция.
+\[
+    \corr(X, Y) = \frac{\cov(X, Y)}{\sqrt{\mathbb{D}X} \cdot \sqrt{\mathbb{D}Y}} = \frac{0.225}{\sqrt{0.6875} \cdot \sqrt{1.84}} \approx 0.2 
+\]
+
+Математическое ожидание для $V = 6X - 4Y + 3$:
+\[
+    \mathbb{E}V = \mathbb{E}(6X - 4Y + 3) = 6\mathbb{E}X - 4\mathbb{E}Y + 3 = 6 \cdot (-0.75) - 4 \cdot (1.7) + 3 = -8.3
+\]
+
+Дисперсию для $V = 6X - 4Y + 3$. Посчитаем значения $V$, $V - \mathbb{E}V$ и $(V - \mathbb{E}V)^2$:
+\[
+    \begin{tabular}{|c|c|c|c|}
+        \hline 
+         \diagbox[width=3em]{X}{Y} & 0 & 1 & 3 \\
+         \hline  
+         0 & 3 & -1 & -9 \\ 
+         \hline
+         -1 & -3 & -7 & -15 \\ 
+         \hline
+         -2 & -9 & -13 & -21 \\
+         \hline 
+    \end{tabular} \quad
+    \begin{tabular}{|c|c|c|c|}
+        \hline 
+         \diagbox[width=3em]{X}{Y} & 0 & 1 & 3 \\
+         \hline  
+         0 & 11.3 & 7.3 & -0.7 \\ 
+         \hline
+         -1 & 5.3 & 1.3 & -6.7 \\ 
+         \hline
+         -2 & -0.7 & -4.7 & -12.7 \\
+         \hline 
+    \end{tabular} \quad 
+    \begin{tabular}{|c|c|c|c|}
+        \hline 
+         \diagbox[width=3em]{X}{Y} & 0 & 1 & 3 \\
+         \hline  
+         0 & 127.69 & 53.29 & 0.39 \\ 
+         \hline
+         -1 & 28.09 & 1.69 & 44.89 \\ 
+         \hline
+         -2 & 0.49 & 22.09 & 161.29 \\
+         \hline 
+    \end{tabular}
+\]
+И теперь сама дисперсия $\mathbb{D}V = \mathbb{E}(V - \mathbb{E}V)^2$
+\[
+    \mathbb{D}V = 102.01 \cdot P(X = 0, Y = 0) + 16.81 \cdot P(X = -1, Y = 0) + \dots = 42.91
+\]
+
+\newpage
+
+\textbf{Задание №4.} Пусть $x_1, \dots, x_n$ -- результаты $n$ независимых повторных наблюдений над дискретной случайной величиной $\xi$, принимающей значения из множества $Y = {0, 1}$ с вероятностями:
+\[
+    P(\xi = 1) = \frac{1 + \theta}{2}, \quad P(\xi = 0) = \frac{1 - \theta}{2}, \quad -1 < \theta < 1
+\]
+Найти оценку максимального правдоподобия параметра $\theta$.
+
+\vspace{0.5cm}
+
+\textbf{Решение задания №4.} Функция правдоподобия для $n$ независимых наблюдений:
+\[
+    \argmax_{\theta \in (-1, 1)} \ L(\theta) = \prod_{i=1}^{n} \left(\frac{1 + \theta}{2}\right)^{x_i} \left(\frac{1 - \theta}{2}\right)^{1 - x_i}
+\]
+Логарифм функции правдоподобия:
+\[
+    \argmax_{\theta \in (-1, 1)} \ \ln L(\theta) = \sum_{i=1}^{n} \left[ x_i \ln\left(\frac{1 + \theta}{2}\right) + (1 - x_i) \ln\left(\frac{1 - \theta}{2}\right) \right]
+\]
+Находим производную по $\theta$ и приравниваем ее к нулю:
+\[
+    \frac{d(\ln L)}{d\theta} = \sum_{i=1}^{n} \left[ \frac{x_i}{1 + \theta} - \frac{1 - x_i}{1 - \theta} \right] = 0
+\]
+Решим получившиеся уравнение:
+\begin{gather*}
+    \sum_{i=1}^{n} \left[ \frac{x_i}{1 + \theta} - \frac{1 - x_i}{1 - \theta} \right] = 0 \\ 
+    \sum_{i=1}^{n} \left[ \frac{x_i(1 - \theta)}{(1 + \theta)(1 - \theta)} - \frac{(1 + \theta)(1 - x_i)}{(1 - \theta)(1 + \theta)} \right] = 0 \\ 
+    \sum_{i=1}^{n} \left[ x_i(1 - \theta) - (1 + \theta)(1 - x_i) \right] = 0 \quad \vrule \quad 1^2 + \theta^2 \ne 0 \\ 
+    \sum_{i=1}^{n} \left[ x_i - \theta x_i - (1 - x_i + \theta - \theta x_i) \right] = 0 \\ 
+    \sum_{i=1}^{n} \left[ x_i - \theta x_i - 1 + x_i - \theta + \theta x_i \right] = 0 \\ 
+    \sum_{i=1}^{n} \left[ 2x_i - 1\right] = n\theta \\ 
+    \frac{\sum_{i=1}^{n} \left[ 2x_i - 1\right]}{n} = \theta \\ 
+    \frac{2\sum_{i=1}^{n} x_i}{n}  - 1 = \theta
+\end{gather*}
+
+\textbf{Ответ:} $\displaystyle \theta = \frac{2\sum_{i=1}^{n} x_i}{n}  - 1$
+
+\newpage 
+
+\textbf{Задание №5.} Пусть $x_1, \dots, x_n$ -- результаты $n$ независимых повторных наблюдений над случайной величиной $\xi$, плотность распределения которой имеет вид:
+\begin{gather*}
+    f(x, \theta) = pf_1(x) + (1 - p)f_2(x, \theta), \\ 
+    f_1(x, \theta) = 
+    \begin{cases}
+        \frac{1}{\theta}, & x \in (0, \theta] \\ 
+        0, & x \not \in (0, \theta]
+    \end{cases} \quad \text{и} \quad 
+    f_2(x, \theta) = 
+    \begin{cases}
+        \frac{1}{1 - \theta}, & x \in (0, \theta] \\ 
+        0, & x \not \in (0, \theta]
+    \end{cases} \\
+    \text{$p$, $\theta$ -- неизвестные параметры $0 \le p \le 1$}
+\end{gather*}
+    
+Найти оценки неизвестных параметров $p$, $\theta$ методом моментов.
+
+\vspace{0.5cm}
+
+\textbf{Решение задания №5.} Найдем первый теоретический момент случайной величины $\xi$:
+\begin{align*}
+    m_1 &= \frac{p}{\theta} \int_{0}^{\theta} x \,dx + \frac{(1 - p)}{1 - \theta}\int_{\theta}^{1} x \,dx  = \\ 
+    &= \frac{1}{2} (\theta - p + 1)
+\end{align*}
+Найдем второй теоретический момент случайной величины $\xi$:
+\begin{align*}
+    m_2 &= \frac{p}{\theta} \int_{0}^{\theta} x^2 \,dx + \frac{(1 - p)}{1 - \theta}\int_{\theta}^{1} x^2 \,dx = \\ 
+    &= \frac{1}{3} (\theta^2 + \theta - \theta p - p + 1)
+\end{align*}
+Теперь посчитаем первый выборочный момент случайной величины $\xi$:
+\[
+    \hat{m}_1 = \frac{1}{n} \sum_{i = 1}^n x_i
+\]
+И второй выборочный момент случайной величины $\xi$:
+\[
+    \hat{m}_2 = \frac{1}{n} \sum_{i = 1}^n x_i^2
+\]
+Приравняем моменты и получим систему:
+\[
+    \begin{cases}
+        m_1 = \hat{m_1} \\ 
+        m_2 = \hat{m_2}
+    \end{cases} \Rightarrow 
+    \begin{cases}
+       \displaystyle \theta - p + 1 = 2\hat{m_1} \\ 
+       \displaystyle \theta^2 + \theta - \theta p - p + 1 = 3\hat{m_2}
+    \end{cases}
+\]
+Решим систему:
+\[
+    \begin{cases}
+        p = 1 - 2 \hat{m_1} + \theta \\ 
+        \theta^2 + \theta - \theta p - p + 1 = 3\hat{m_2}
+    \end{cases}
+\]
+Подставим $p$ из первого уравнения во второе:
+\begin{gather*}
+    \theta^2 + \theta - \theta (1 - 2 \hat{m_1} + \theta) - (1 - 2 \hat{m_1} + \theta) + 1 = 3\hat{m_2} \\ 
+    \theta^2 + \theta - \theta + \theta 2 \hat{m_1} - \theta^2 - 1 + 2 \hat{m_1} - \theta + 1 = 3\hat{m_2} \\ 
+    2 \theta \hat{m_1} + 2 \hat{m_1} - \theta = 3\hat{m_2} \\ 
+    \theta (2 \hat{m_1} - 1) = 3\hat{m_2} - 2 \hat{m_1} \\ 
+    \theta = \frac{3\hat{m_2} - 2 \hat{m_1}}{2 \hat{m_1} - 1}
+\end{gather*}
+Теперь найдем параметр $p$ из равенства полученного преобразованиями первого уравнения:
+\begin{gather*}
+    p = 1 - 2 \hat{m_1} + \frac{3\hat{m_2} - 2 \hat{m_1}}{2 \hat{m_1} - 1} \\ 
+    p = 1 - \frac{2 \hat{m}_1(2 \hat{m}_1 - 1)+ 3\hat{m}_2 - 2 \hat{m}_1}{2 \hat{m_1} - 1} \\ 
+    p =  1 - \frac{4\hat{m}_2^2 - 4\hat{m}_1 + 3\hat{m}_2}{2 \hat{m_1} - 1}
+\end{gather*}
+\end{document} 
