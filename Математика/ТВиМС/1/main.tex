@@ -14,6 +14,7 @@
 
 \pagenumbering{gobble}  % Отключение нумерации
 \newcommand\mymathop[1]{\mathop{\operatorname{#1}}}
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
 
 \DeclareMathOperator*{\matrixA}{A}
 \DeclareMathOperator{\Rank}{Rank}
@@ -23,439 +24,190 @@
 \DeclareMathOperator{\Leg}{Leg}
 \DeclareMathOperator{\Cheb}{Cheb}
 \DeclareMathOperator{\Taylor}{Taylor}
+
+\makeatletter
+\renewcommand*\env@matrix[1][\arraystretch]{%
+  \edef\arraystretch{#1}%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{*\c@MaxMatrixCols c}}
+\makeatother
+
 \author{Гурьянов Кирилл}
 
-\title{Домашние задание №1 по линейной алгебре. МТС.Teta ШАД}
+\title{Домашние задание №1 по статистике. МТС.Teta ШАД}
 \date{\today}
 
 \begin{document}
 
-\textbf{Задание №1.} Зная, что $|\Vec{a}| = 2$, $|\Vec{b}|=5$ и $(\widehat{a, b}) = \frac{2 \pi }{3}$, определить, при каком значении коэффициента $\alpha$ векторы $\Vec{p} = \alpha \Vec{a} + 17 \Vec{b}$ и $\Vec{q} = 3\Vec{a} - \Vec{b}$ окажутся перпендикулярными.
+\textbf{Задание №1.} Компания по страхованию автомобилей разделяет водителей по $3$ классам: класс А (мало рискует), класс В (рискует средне), класс С (рискует сильно). Компания предполагает, что из всех водителей, застрахованных у неё, $30\%$ принадлежат классу А, $50\%$ – классу В, $20\%$ – классу С. Вероятность того, что в течение года водитель класса А попадёт хотя бы в одну автокатастрофу, равна $0,01$ для водителя класса В эта вероятность равна $0,03$, а для водителя класса С – $0,1$. Мистер Джонс страхует свою машину у этой компании и в течение года попадает в автокатастрофу. Какова вероятность того, что он относится к классу А?
+
 
 \vspace{0.5cm} 
 
-\textbf{Решение задания №1.} Для того, что вектора оказались перпендикулярными необходимо, чтобы скалярное произведение равнялось $0$. То есть: 
-\[
-(\Vec{p}, \ \Vec{q}) = 0 \ \Rightarrow \ (\alpha \Vec{a} + 17 \Vec{b}, \ 3\Vec{a} - \Vec{b}) = 0
-\]
-Дважды воспользуемся дистрибутивностью относительно сложения:
-\[
- (\alpha \Vec{a} + 17 \Vec{b}, \ 3\Vec{a} - \Vec{b}) = (\alpha \Vec{a}, \ 3\Vec{a} - \Vec{b}) + (17 \Vec{b}, \ 3\Vec{a} - \Vec{b}) = (\alpha \Vec{a}, \ 3\Vec{a}) - (\alpha \Vec{a}, \  \Vec{b}) + (17 \Vec{b}, \ 3\Vec{a}) - (17 \Vec{b}, \ \Vec{b}) = 0
-\]
-Теперь посчитаем каждое скалярное произведение:
+\textbf{Решение задания №1.} Нам нужно найти вероятность того, что водитель принадлежит классу A, при условии, что он попал в аварию. Воспользуемся теоремой Байеса (для нахождения искомой вероятности) и формулой полной вероятности (для нахождения вероятности попадания в аварию):
+\begin{gather*}
+    \mathbb{\mathbb{P}}(\text{Класс водителя = A} | \text{Водитель попал в аварию}) =  \\ 
+    = \frac{\mathbb{\mathbb{P}}(\text{Водитель попал в аварию} | \text{Класс водителя = A}) \cdot \mathbb{\mathbb{P}}(\text{Класс водителя = A})}{\mathbb{\mathbb{P}}(\text{Водитель попал в аварию})} = \\
+\end{gather*}
+Воспользуемся формулой полной вероятности для нахождения $\mathbb{P}(\text{Водитель попал в аварию})$:
 \begin{align*}
-    & (\alpha \Vec{a}, \ 3\Vec{a}) = 3 \alpha \cdot (\Vec{a}, \Vec{a}) = 3 \alpha \cdot (\Vec{a}, \Vec{a}) = 3 \alpha \cdot |\Vec{a}| \cdot |\Vec{a}| \cdot \cos(\widehat{a, a}) = 3 \alpha \cdot |\Vec{a}|^2 \cdot 1 = 12 \alpha\\
-    & (\alpha \Vec{a}, \  \Vec{b}) = \alpha \cdot (\Vec{a}, \Vec{b}) = \alpha \cdot |\Vec{a}| \cdot |\Vec{b}| \cdot \cos(\widehat{a, b}) = 2 \cdot 5 \cdot \alpha \cdot \left( -\frac{1}{2} \right) = -5\alpha \\  
-    & (17 \Vec{b}, \ 3\Vec{a}) = 51 (\Vec{a}, \Vec{b}) = 51 \cdot 2 \cdot 5 \cdot \left( - \frac{1}{2}\right) = -255 \\ 
-    & (17 \Vec{b}, \Vec{b}) = 17 \cdot |\Vec{b}|^2 = 17 \cdot 5^2 = 17 \cdot 25 = 425 \\
+    &\mathbb{P}(\text{Водитель попал в аварию}) = \\ 
+        &\mathbb{P}(\text{Водитель попал в аварию} | \text{Класс водителя = A}) \cdot \mathbb{P}(\text{Класс водителя = A}) + \\
+        + &\mathbb{P}(\text{Водитель попал в аварию} | \text{Класс водителя = A}) \cdot \mathbb{P}(\text{Класс водителя = A}) + \\ 
+        + &\mathbb{P}(\text{Водитель попал в аварию} | \text{Класс водителя = A}) \cdot \mathbb{P}(\text{Класс водителя = A})
 \end{align*}
-Запишем получившиеся уравнение: 
-\begin{gather*}
-    (\alpha \Vec{a}, \ 3\Vec{a}) - (\alpha \Vec{a}, \  \Vec{b}) + (17 \Vec{b}, \ 3\Vec{a}) - (17 \Vec{b}, \ \Vec{b}) = 0 \\
-    12\alpha + 5 \alpha -255 - 425 = 0 \\ 
-    \alpha = \frac{255 + 425}{17} \\ 
-    \alpha = \frac{680}{17} \\ 
-    \alpha = 40
-\end{gather*}
-\textbf{Ответ:} $\alpha = 40$.
-\vspace{1cm}
+Окончательные расчеты:
+\[
+    \frac{0.01 \cdot 0.3}{0.3 \cdot 0.01 + 0.5 \cdot 0.03 + 0.2 \cdot 0.1} = \frac{3}{38} \approx 0.079
+\]
 
-\textbf{Задание №2.} Пусть $G$ - множество всех векторов-столбцов линейного пространства $\mathbb{R}^2$ с положительными элементами, то есть:
-\[
-G = \{x: x=
-\begin{pmatrix}
-    x_1 \\
-    x_2 \\ 
-    \vdots \\ 
-    x_n
-\end{pmatrix}
-\in \mathbb{R}^n, \ x_i > 0, \ i = 1,2,\dots,n\}.
-\]
-Проверить, является линейным пространством множество $G$, если операции сложения векторов и умножения вектора на число определяются следующим образом:
-\[
-x + y =
-\begin{pmatrix}
-    x_1 \cdot y_1 \\
-    x_2 \cdot y_2 \\ 
-    \vdots \\
-    x_n \cdot y_n 
-\end{pmatrix}
-\quad \text{и} \quad\ \alpha x = 
-\begin{pmatrix}
-    x_1^\alpha \\
-    x_2^\alpha \\ 
-    \vdots \\
-    x_n^\alpha 
-\end{pmatrix}
-\]
+\textbf{Ответ: } $\mathbb{P}(\text{Класс водителя = A} | \text{Водитель попал в аварию}) = \cfrac{3}{38} \approx 0.079$.
+
+\newpage
+
+\textbf{Задание №2.} Движением частицы по целым точкам прямой управляет схема Бернулли с вероятностью $p$ исхода $1$. Если в данном испытании схемы Бернулли появилась $1$, то частица из своего положения переходит в правую соседнюю точку, а в противном случае -- в левую. Найти вероятность того, что за $n$ шагов частица из точки $0$ перейдет в точку $m$.
+
 
 \vspace{0.5cm} 
 
-\textbf{Решение задания №2.} Будем проверять аксиомы линейного пространства. Начнем со сложения и его коммутативности ($a + b = b + a$):
+\textbf{Решение задания №2.} Рассмотрим случай, когда $m \ge 0$. Для того, чтобы частица перешла в нужную нам точку необходимо, чтобы она в сумме совершила $n - \frac{n - m}{2}$ шагов вправо и $\frac{n - m}{2}$ шагов влево. Если $n \not \equiv m \Mod{2}$, тогда точка недостижима (нельзя попасть в точку $2$ за $3$ шага):
 \[
-a + b = 
-\begin{pmatrix}
-    a_1 \cdot b_1 \\
-    a_2 \cdot b_2 \\ 
-    \vdots \\
-    a_n \cdot b_n 
-\end{pmatrix}
-\quad 
-b + a = 
-\begin{pmatrix}
-    b_1 \cdot a_1 \\
-    b_2 \cdot a_2 \\ 
-    \vdots \\
-    b_n \cdot a_n 
-\end{pmatrix}
+    \mathbb{P}(x = m) = 
+    \begin{cases}
+        C_n^{\frac{n - m}{2}} p^{n - \frac{n - m}{2}} (1 - p)^{\frac{n - m}{2}}, & n \equiv m \Mod{2} \\ 
+        0, & n \not \equiv m \Mod{2}
+    \end{cases}
 \]
-Пользуясь коммутативностью умножения, легко заметить что:
-\[
-a + b = 
-\begin{pmatrix}
-    a_1 \cdot b_1 \\
-    a_2 \cdot b_2 \\ 
-    \vdots \\
-    a_n \cdot b_n 
-\end{pmatrix}
-= \begin{pmatrix}
-    b_1 \cdot a_1 \\
-    b_2 \cdot a_2 \\ 
-    \vdots \\
-    b_n \cdot a_n 
-\end{pmatrix}
-= b + a
-\]
-Проверим ассоциативность:
+Рассмотрим случай, когда точка $m$ отрицательная и когда $m > n$. В случае с отрицательной точкой $m$ нужно <<шагать>> в противоположную сторону, в случае $m > n$ вероятность будет равна $0$.
+
+\textbf{Ответ:} 
+$
+\mathbb{P}(x = m) = 
+    \begin{cases}
+        C_n^{\frac{n - m}{2}} p^{n - \frac{n - m}{2}} (1 - p)^{\frac{n - m}{2}}, & n \equiv m \Mod{2} \text{ и } 0 \le m \le n \\ 
+        C_n^{\frac{n - \abs{m}}{2}} p^{\frac{n - \abs{m}}{2}} (1 - p)^{n - \frac{n - \abs{m}}{2}}, & n \equiv m \Mod{2} \text{ и } -n \le m < 0 \\ 
+        0, & n \not \equiv m \Mod{2} \text{ или } \abs{m} > n
+    \end{cases}
+$
+
+\newpage
+
+\textbf{Задание №3.} Плотность распределения $p(x)$ некоторой случайно величины имеет вид $p(x) = \cfrac{c}{e^x + e^{-x}}$ , где $c$ -- константа. Найти значение этой константы $c$ и вероятность того, что случайная величина примет значение, принадлежащее интервалу $( \pi; \pi)$.
+\vspace{0.5cm}
+
+\textbf{Решение задания №3.} Для того, чтобы существовала наша функция плотности вероятности, необходимо, чтобы следующий определенный интеграл сходился к 1:
 \begin{gather*}
-(a + b) + c = 
-\begin{pmatrix}
-    a_1 \cdot b_1 \\
-    a_2 \cdot b_2 \\ 
-    \vdots \\
-    a_n \cdot b_n 
-\end{pmatrix}
-+ 
-\begin{pmatrix}
-    c_1 \\ 
-    c_2 \\  
-    \vdots \\
-    c_n  
-\end{pmatrix}
-=
-\begin{pmatrix}
-    a_1 \cdot b_1 \cdot c_1 \\
-    a_2 \cdot b_2 \cdot c_2 \\ 
-    \vdots \\
-    a_n \cdot b_n \cdot c_n
-\end{pmatrix} 
-=
-\begin{pmatrix}
-    a_1  \\
-    a_2  \\ 
-    \vdots \\
-    a_n  
-\end{pmatrix}
-+ 
-\begin{pmatrix}
-    b_1 \cdot c_1 \\ 
-    b_2 \cdot c_2 \\  
-    \vdots \\
-    b_n \cdot c_n 
-\end{pmatrix} = 
-a + (b + c)
+    \int_{-\infty}^{+\infty} p(x) dx = 1 \\ 
+    \int_{-\infty}^{+\infty} \frac{c}{e^x + e^{-x}} dx = 1 \\ 
 \end{gather*}
-Нейтральным элементом в этом поле будет единичный вектор $\mathbf{0} = (1, 1, \dots, 1)^T$. Обратным элементом ($a + (-a) = 0$) будет вектор, состоящий из значений обратных к исходным ($a_n = a_n^{-1}$).
-\[
-a + (-a) = 
-\begin{pmatrix}
-    a_1 \\ 
-    a_2 \\  
-    \vdots \\
-    a_n
-\end{pmatrix} +
-\begin{pmatrix}
-    \cfrac{1}{a_1} \\ 
-    \cfrac{1}{a_2} \\  
-    \vdots \\
-    \cfrac{1}{a_n}
-\end{pmatrix} = 
-\begin{pmatrix}
-    \cfrac{a_1}{a_1} \\ 
-    \cfrac{a_2}{a_2} \\  
-    \vdots \\
-    \cfrac{a_n}{a_n}
-\end{pmatrix} = 
-\begin{pmatrix}
-    1 \\ 
-    1 \\  
-    \vdots \\
-    1
-\end{pmatrix} = \mathbf{0}
-\]
-Так как все элементы $a_i > 0$ у нас не возникнет проблемы с делением на $0$. \\ 
-
-Теперь проверим свойства умножения. Коммутативность и ассоциативность очевидна. Нейтральным элементом ($a \cdot 1 = a$) относительно умножения будет $1$:
-\[
-1 \cdot
-\begin{pmatrix}
-    a_1 \\ 
-    a_2 \\  
-    \vdots \\
-    a_n
-\end{pmatrix}
-= 
-\begin{pmatrix}
-    a_1^1 \\ 
-    a_2^1 \\  
-    \vdots \\
-    a_3^1
-\end{pmatrix}
-=
-\begin{pmatrix}
-    a_1 \\ 
-    a_2 \\  
-    \vdots \\
-    a_3
-\end{pmatrix}
-\]
-Обратным элементом для ненулевого элемента будет $0$:
-\[
-0 \cdot
-\begin{pmatrix}
-    a_1 \\ 
-    a_2 \\  
-    \vdots \\
-    a_n
-\end{pmatrix}
-= 
-\begin{pmatrix}
-    a_1^0 \\ 
-    a_2^0 \\  
-    \vdots \\
-    a_3^0
-\end{pmatrix} = 
-\begin{pmatrix}
-    1 \\ 
-    1 \\  
-    \vdots \\
-    1
-\end{pmatrix} = \mathbf{0}
-\]
-Проверим дистрибутивность умножения на число относительно сложения ($a \cdot (b + c) = a \cdot b + a \cdot c$):
-\[
-a \cdot (b + c) = a \cdot
-\begin{pmatrix}
-    b_1 \cdot c_1 \\ 
-    b_2 \cdot c_2 \\  
-    \vdots \\
-    b_n \cdot c_n
-\end{pmatrix} = 
-\begin{pmatrix}
-    (b_1 \cdot c_1)^a \\ 
-    (b_2 \cdot c_2)^a \\  
-    \vdots \\
-    (b_n \cdot c_n)^a
-\end{pmatrix} =
-\begin{pmatrix}
-    b_1^a \cdot c_1^a \\ 
-    b_2^a \cdot c_2^a \\  
-    \vdots \\
-    b_n^a \cdot c_n^a
-\end{pmatrix} = 
-\begin{pmatrix}
-    b_1^a  \\ 
-    b_2^a  \\  
-    \vdots \\
-    b_n^a 
-\end{pmatrix} + 
-\begin{pmatrix}
-    c_1^a  \\ 
-    c_2^a  \\  
-    \vdots \\
-    c_n^a 
-\end{pmatrix} = 
-a \cdot 
-\begin{pmatrix}
-    b_1  \\ 
-    b_2  \\  
-    \vdots \\
-    b_n 
-\end{pmatrix} + 
-a \cdot 
-\begin{pmatrix}
-    b_1  \\ 
-    b_2  \\  
-    \vdots \\
-    b_n 
-\end{pmatrix}
-= a \cdot b + a \cdot c
-\] 
-\vspace{1cm}
-
-\textbf{Задание №3.} Используя определение, доказать, что для любых векторов $x$, $y$, $z$ и чисел $\alpha$, $\beta$, $\gamma$ векторы $\alpha x - \beta y$, $\gamma y - \alpha z$, $\beta z - \gamma x$ линейно зависимы.
-
-\vspace{0.5cm} 
-
-\textbf{Решение задания №3.} Воспользуемся определением линейной зависимости - должен существовать такой набор чисел $a_1, a_2, a_3$ не равных $0$ одновременно, что: $a_1(\alpha x - \beta y) + a_2(\gamma y - \alpha z) + a_3 (\beta z - \gamma x) = 0$.
+Найдем константу $c$:
 \begin{gather*}
-    a_1(\alpha x - \beta y) + a_2(\gamma y - \alpha z) + a_3 (\beta z - \gamma x) = 0 \\ 
-    - \frac{a_1}{a_3}(\alpha x - \beta y) - \frac{a_2}{a_3}(\gamma y - \alpha z) = \beta z - \gamma x \\
-    \text{Переобозначим коэффициенты:} \ a_1 = - \frac{a_1}{a_3}, \ a_2 = - \frac{a_2}{a_3}\\
-    a_1(\alpha x - \beta y) + a_2(\gamma y - \alpha z) = \beta z - \gamma x \\ 
-    \text{Заметим, что при} \ a_1 = -\cfrac{\gamma}{\alpha}, \ a_2 = -\cfrac{\beta}{\alpha} \ \text{левая и правя часть равны} \\ 
-    - \cfrac{\gamma}{\alpha} \cdot (\alpha x - \beta y) - \cfrac{\beta}{\alpha} \cdot (\gamma y - \alpha z) = \beta z - \gamma x \\ 
-    - \gamma x + \cfrac{\gamma \cdot \beta}{\alpha} y - \cfrac{\beta \cdot \gamma}{\alpha} y + \beta z = \beta z - \gamma x \\
-    \beta z - \gamma x = \beta z - \gamma x \\ 
-    0 = 0 
+    \int_{-\infty}^{+\infty} \frac{dx}{e^x + e^{-x}} = \frac{1}{c} \\ 
+    \int_{-\infty}^{+\infty} \frac{dx}{e^x + \frac{1}{e^x}} = \frac{1}{c} \\ 
+    \int_{-\infty}^{+\infty} \frac{dx}{\frac{e^{2x}}{e^x} + \frac{1}{e^x}} = \frac{1}{c} \\ 
+    \int_{-\infty}^{+\infty} \frac{dx}{\frac{e^{2x} + 1}{e^x}} = \frac{1}{c} \\
+    \int_{-\infty}^{+\infty} \frac{e^x}{e^{2x} + 1} dx = \frac{1}{c}
 \end{gather*}
-Таким образом при $a_1 = \cfrac{\gamma}{\alpha}$, $a_2 = \cfrac{\beta}{\alpha}$, $a_3 = 1$ вектор $\beta z - \gamma x$ можно получить из векторов $\alpha x - \beta y$ и $\gamma y - \alpha z$. Таким образом вектора линейно зависимы.
-
-\vspace{1cm}
-
-\textbf{Задание №4.} Проверить, является ли система векторов $e1$, $e2$, $e3$ базисом в линейном пространстве $\mathbb{R}^3$, и найти координаты вектора $x$ в этом базисе. По известному координатному вектору $y_e$ найти вектор $y$;
+Сделаем замену переменной $u = e^x$, тогда $du = e^x dx$ и $dx = \cfrac{dx}{e^x}$:
 \[
-e_1 = 
-\begin{pmatrix}
-     -2 \\
-     3 \\
-     0
-\end{pmatrix}, \quad
-e_2 = 
-\begin{pmatrix}
-     2 \\
-     -3 \\
-     4
-\end{pmatrix}, \quad
-e_3 = 
-\begin{pmatrix}
-     -2 \\
-     0 \\
-     -3
-\end{pmatrix}, \quad
-x = 
-\begin{pmatrix}
-     -4 \\
-     3 \\
-     -7
-\end{pmatrix}, \quad
-y_e = 
-\begin{pmatrix}
-     4 \\
-     4 \\
-     3
-\end{pmatrix}
+    \int_{0}^{+\infty} \frac{du}{u^2 + 1} = \frac{1}{c}
 \]
-
-\vspace{0.5cm} 
-
-\textbf{Решение задания №4.} Для того чтобы понять является ли система векторов $e_1$, $e_2$, $e_3$ базисом в пространстве $\mathbb{R}^3$ можно привести матрицу, состоящую из базисных векторов, к треугольному виду. Если полученная матрица не будет содержать нулевых строк, то вектора будут линейно независимы, как следствие, система векторов $e_1$, $e_2$, $e_3$ будет являться базисом в пространстве $\mathbb{R}^3$.
-\[
-\begin{pmatrix}
-     -2 & 2 & -2 \\
-     3 & -3 & 0 \\
-     0 & 4 & -3
-\end{pmatrix} \rightarrow
-\begin{pmatrix}
-     -2 & 2 & -2 \\
-     0 & 0 & -3 \\
-     0 & 4 & -3
-\end{pmatrix} \rightarrow
-\begin{pmatrix}
-     -2 & 2 & -2 \\
-     0 & 4 & -3 \\ 
-     0 & 0 & -3 
-\end{pmatrix} 
-\]
-Полученная матрица не содержит нулевых строк, получаем, что система система векторов $e_1$, $e_2$, $e_3$ является базисом в пространстве $\mathbb{R}^3$. \\ 
-
-Получим координаты вектора $x$ в базисе, состоящим из векторов $e_1$, $e_2$, $e_3$, для этого решим СЛАУ $Ay=x$, где $A$ - матрица из векторов $e_1$, $e_2$, $e_3$, $x$ - вектор, данный по условию, $y$ - вектор $x$ в базисе $e_1$, $e_2$, $e_3$.
-\[
-\begin{pmatrix}
-     -2 & 2 & -2 & \vrule & -4 \\
-     3 & -3 & 0 & \vrule & 3 \\
-     0 & 4 & -3 & \vrule & -7
-\end{pmatrix} \rightarrow 
-\begin{pmatrix}
--2 & 2 & -2 & \vrule & -4 \\
-0 & 0 & -3 & \vrule & -3 \\
-0 & 4 & -3 & \vrule & -7
-\end{pmatrix} \rightarrow 
-\begin{pmatrix}
--2 & 2 & -2 & \vrule & -4 \\
-0 & 4 & -3 & \vrule & -7 \\
-0 & 0 & -3 &\vrule & -3
-\end{pmatrix}
-\]
-Получим СЛАУ:
+Получаем табличный интеграл:
 \begin{gather*}
+    \int_{0}^{+\infty} \frac{du}{u^2 + 1} = \arctan(u) \Big |_{0}^{+\infty} = \frac{\pi}{2} = \frac{1}{c} \\ 
+    \frac{\pi}{2} = \frac{1}{c} \\ 
+    c = \frac{2}{\pi}
+\end{gather*}
+
+Для того чтобы узнать вероятность того, что случайная величина принимает значение из интервала $(-\pi; \pi)$, можно воспользоваться определением плотности вероятности:
+\[
+    \mathbb{P}(x \in [-\pi; \pi]) = \int_{-\pi}^{\pi} \frac{\frac{2}{\pi}}{e^x + e^{-x}} dx = \frac{2}{\pi} \int_{-\pi}^{\pi} \frac{dx}{e^x + e^{-x}}
+\]
+Далее посчитаем этот интеграл, который похож на тот, который мы уже считали:
+\[
+    \frac{2}{\pi} \int_{-\pi}^{\pi} \frac{dx}{e^x + e^{-x}} = \frac{2}{\pi} \arctan{(e^x)} \Big |_{-\pi}^{\pi} = \frac{2}{\pi} (\arctan{(e^{\pi})} - \arctan{(e^{-\pi})}) \approx 0.945
+\]
+
+
+\textbf{Ответ:} $c = \cfrac{2}{\pi}$, $\mathbb{P}(x \in [-\pi, \pi]) \approx 0.945$.
+
+\newpage
+
+\textbf{Задание №4.} Задана плотность распределения вероятностей $f(x)$ непрерывной случайно величины $x$:
+\[
+f(x) = 
 \begin{cases}
-    \begin{aligned}
-    -2x_1 +2x_2 -2x_3 =& -4 \\
-     4x_2 - 3x_3 =& -7 \\
-    -3 x_3 =& -3
-    \end{aligned}
-\end{cases} 
+    A \sqrt{x}, & x \in [1; 4] \\ 
+    0, & x \not \in [1; 4]
+\end{cases}
+\]
+Найти функцию распределения $F(x)$ и $\mathbb{P}(2 < X < 3)$.
+\vspace{0.5cm}
+
+\textbf{Решение задания №4.} Найдем значение параметра $A$:
+\begin{gather*}
+    \int_{-\infty}^{+\infty} p(x)  dx = 1 \\ 
+    \int_{1}^{4} A \sqrt{x} dx = 1 \\ 
+    \int_{1}^{4} \sqrt{x} dx = \frac{1}{A}
 \end{gather*}
-
-Тогда вектор $x$ в новом базисе будет равен $\left(0, -1, 1 \right)$. \\ 
-
-Получим вектор $y$, умножив матрицу $A$ на вектор $y_e$ ($Ay_e = y$):
+Отдельно посчитаем этот интеграл:
 \[
-\begin{pmatrix}
-     -2 & 2 & -2 \\
-     3 & -3 & 0 \\
-     0 & 4 & -3 
-\end{pmatrix}
-\times
-\begin{pmatrix}
-     4 \\
-     4 \\
-     3 
-\end{pmatrix} = 
-\begin{pmatrix}
-    -2\cdot4+2\cdot4+\left(-2\right)\cdot3 \\
-    3\cdot4+\left(-3\right)\cdot4+0\cdot3 \\
-    0\cdot4+4\cdot4+\left(-3\right)\cdot3
-\end{pmatrix} = 
-\begin{pmatrix}
-     -6 \\
-     0 \\
-     7 
-\end{pmatrix}
+    \int_{1}^{4} \sqrt{x} dx = \int_{1}^{4} x^{\frac{1}{2}} dx = \left( \frac{2}{3} \sqrt{x^3} \right) \Bigg |_1^4 = \frac{2}{3} (8 - 1) = \frac{14}{3}
+\]
+Тогда наш параметр $A = \frac{3}{14}$. Функция плотности вероятности принимает вид:
+\[
+f(x) = 
+\begin{cases}
+    \cfrac{3}{14} \sqrt{x}, & x \in [1; 4] \\ 
+    0, & x \not \in [1; 4]
+\end{cases}
+\]
+Теперь мы можем найти функцию распределения по определению:
+\begin{gather*}
+    \int_{-\infty}^x f(x) = F(x) \\ 
+    \int_{1}^x \frac{3}{14} \sqrt{x} dx = \frac{3}{14} \left( \frac{2}{3} \sqrt{x^3} - \frac{2}{3} \right) = \frac{1}{7} \sqrt{x^3} - \frac{1}{7}
+\end{gather*}
+Тогда:
+\[
+F(x) = 
+\begin{cases}
+    0, & x < 1 \\
+    \frac{1}{7} \sqrt{x^3} - \frac{1}{7}, & 1 \le x \le 4 \\ 
+    1, & x > 4
+\end{cases}
 \]
 
-
-\vspace{1cm}
-
-\textbf{Задание №5.} Найти какой-нибудь базис и размерность линейного пространства $V$, заданного следующим образом: 
+Теперь найдем $\mathbb{P}(2 < x < 3)$:
 \[
-\text{Пространство многочленов $p(x) \in \mathbb{P}_4$ таких, что $p(1) + p(-1) = 0$}
+    \mathbb{P}(2 < X < 3) = F(3) - F(2) =  \frac{1}{7} \sqrt{3^3} - \frac{1}{7} -  \frac{1}{7} \sqrt{2^3} + \frac{1}{7} = \frac{1}{7} \left( \sqrt{3^3} - \sqrt{2^3} \right) \approx 0.338
+\] 
+
+\textbf{Ответ: } $\mathbb{P}(2 < X < 3) \approx 0.338$, 
+$F(x) = 
+\begin{cases}
+    0, & x < 1 \\
+    \frac{1}{7} \sqrt{x^3} - \frac{1}{7}, & 1 \le x \le 4 \\ 
+    1, & x > 4
+\end{cases}.
+$
+
+\newpage 
+
+\textbf{Задание №5.} При работе ЭВМ время от времени возникают сбои. Поток сбоев можно считать простейшим. Среднее число сбоев за сутки равно 1.5. Найти вероятность того, что в течение суток произойдет хотя бы один сбой.
+
+\vspace{0.5cm}
+
+\textbf{Решение задания №5.} Воспользуемся распределением Пуассона.
+\[
+    p(k) \equiv \mathbb{P}(Y = k) = \frac{\lambda ^ k}{k!}e^{-\lambda}
 \]
-
-\vspace{0.5cm} 
-
-\textbf{Решение задания №5.} Распишем условие $p(1) + p(-1) = 0$:
+$k$ - это количество событий, $\lambda$ - математическое ожидание (среднее значение). Тогда наша искомая вероятность будет выражаться следующим образом:
 \begin{gather*}
-    p(1) + p(-1) = 0 \\ 
-    a(1)^4 + b(1)^3 + c(1)^2 + d(1) + e + a(-1)^4 + b(-1)^3 + c(-1)^2 + d(-1) + e = 0 \\ 
-    a + b + c + d + e + a - b + c - d + e = 0 \\
-    2a + 2c + 2e = 0 \\
-    a + c + e = 0 \\
-    a = -c - e 
+    p(\text{произойдет хотя бы 1 сбой}) = 1 - p(\text{произойдет 0 сбоев}) = \\ 
+    = 1 - p(0) = 1 - \frac{1.5 ^ 0}{0!}e^{-1.5} = 1 - e^{-1.5} \approx 0.777
 \end{gather*}
-Таким образом все многочлены линейного пространства $V$ представимы в виде:
-\begin{gather*}
-    p(x) = -(c + e)x^4 + bx^3 + cx^2 + dt + e \\ 
-    p(x) = -cx^4 - ex^4 + bx^3 + cx^2 + dt + e \\ 
-    p(x) = bx^3 + c(x^2 - x^4)+ dt + e(1 - x^4) \\ 
-\end{gather*}
-Теперь невооруженным глазом виден базис этого линейного пространства:
-\begin{align*}
-    e_1 = & 1 - x^4 \\ 
-    e_2 = & x \\ 
-    e_3 = & x^2 - x^4 \\ 
-    e_4 = & x^3 
-\end{align*}
-Соотвественно, размерность этого линейного пространства будет равна $4$.
+
+
+\textbf{Ответ:} $p(\text{произойдет хотя бы 1 сбой}) \approx 0.777$.
 \end{document}
